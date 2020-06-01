@@ -1,0 +1,9 @@
+.login-form {
+  margin: 50px auto;
+}
+
+.error {
+  font-size: 14px;
+  color: red;
+  padding-top: 10px;
+}
