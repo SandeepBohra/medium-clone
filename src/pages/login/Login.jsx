@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+
+import { AuthContext } from '../../contexts/AuthContext';
 
 // Constants
-import { EMAIL_VALIDATOR } from '../../Constants';
+import { EMAIL_VALIDATOR, LOGIN_API } from '../../Constants';
 
 import './Login.css';
 
 const Login = () => {
+
+  const authContext = useContext(AuthContext);
+  const { isLoggedIn, setAuth, user, setUser } = authContext;
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,6 +21,8 @@ const Login = () => {
     email: '',
     password: '',
   })
+
+  const [apiError, setApiError] = useState(null);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -66,8 +73,34 @@ const Login = () => {
     return false;
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async (event) => {
+    setApiError(null);
+    event.preventDefault();
+    const response = await fetch(LOGIN_API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+      },
+      body: JSON.stringify({
+        user: {
+          email,
+          password,
+        }
+      })
+    })
 
+    if (!response.ok) {
+      const { errors } = await response.json();
+      setApiError(errors);
+    } else {
+      const { user: { token }} = await response.json();
+      setAuth(token);
+      setUser(user);
+    }
+  }
+
+  if (isLoggedIn) {
+    return (<Redirect to="/dashboard" />)
   }
   
   return (
@@ -76,7 +109,7 @@ const Login = () => {
         <div className="col-md-6 offset-md-3 col-xs-12">
         <h1 className="text-center">Sign in</h1>
         <div className="text-center"><Link to="/register">Need Account?</Link></div>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email address</label>
             <input
@@ -105,10 +138,13 @@ const Login = () => {
             type="submit"
             className="btn btn-primary"
             disabled={isSubmitDisabled()}
-            onClick={handleSubmit}
+            // onClick={handleSubmit}
           >
             Sign In
           </button>
+          {apiError && Object.keys(apiError).map(e => (
+            <div className="error" key={e}>{`${e} ${apiError[e]}`}</div>
+          ))}
         </form>
         </div>
       </div>

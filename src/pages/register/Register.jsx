@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import { Link } from 'react-router-dom';
 
+// Context
+import { AuthContext } from '../../contexts/AuthContext';
+
 // Constants
-import { EMAIL_VALIDATOR } from '../../Constants';
+import { EMAIL_VALIDATOR, REGISTER_USER_API } from '../../Constants';
 
 import './Register.css';
 
+
 const Register = () => {
+
+  const authContext = useContext(AuthContext);
+  const { setAuth } = authContext;
 
   const [formData, setFormData] = useState({
     username: '',
@@ -20,6 +27,8 @@ const Register = () => {
     email: '',
     password: '',
   })
+
+  const [apiError, setApiError] = useState(null);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -80,8 +89,29 @@ const Register = () => {
     })
   }
   
-  const handleSubmit = () => {
-  
+  const handleSubmit = async (event) => {
+    setApiError(null);
+    event.preventDefault();
+    const response = await fetch(REGISTER_USER_API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+      },
+      body: JSON.stringify({
+        user: {
+          ...formData,
+        }
+      })
+    })
+
+    if (!response.ok) {
+      const { errors } = await response.json();
+      console.log(errors);
+      setApiError(errors);
+    } else {
+      const { user: { token }} = await response.json();
+      setAuth(token);
+    }
   }
 
   const isSubmitDisabled = () => {
@@ -92,12 +122,12 @@ const Register = () => {
   }
 
   return (
-    <div className="container fluid login-form">
+    <div className="container fluid register-form">
       <div className="row">
         <div className="col-md-6 offset-md-3 col-xs-12">
         <h1 className="text-center">Register</h1>
         <div className="text-center"><Link to="/login">Already have an account?</Link></div>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="username">User Name</label>
             <input
@@ -135,10 +165,12 @@ const Register = () => {
             type="submit"
             className="btn btn-primary"
             disabled={isSubmitDisabled()}
-            onClick={handleSubmit}
           >
             Register
           </button>
+          {apiError && Object.keys(apiError).map(e => (
+            <div className="error" key={e}>{`${e} ${apiError[e]}`}</div>
+          ))}
         </form>
         </div>
       </div>
