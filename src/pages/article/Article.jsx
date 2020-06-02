@@ -17,10 +17,10 @@ const Article = () => {
   const fetchArticleURL = `${ARTICLE_API}/${slug}`;
 
   const [articleDetails, setArticleDetails] = useState(null);
-  const [articleError, setArticleError] = useState(null);
+  // const [articleError, setArticleError] = useState(null);
 
   const [comments, setComments] = useState(null);
-  const [commentsError, setCommentsError] = useState(null);
+  // const [commentsError, setCommentsError] = useState(null);
 
   const [commentText, setCommentText] = useState('');
 
@@ -115,8 +115,8 @@ const Article = () => {
         },
       });
       if (!response.ok) {
-        const { errors } = await response.json();
-        setArticleError(errors);
+        // const { errors } = await response.json();
+        // setArticleError(errors);
       } else {
         const { article } = await response.json();
         setArticleDetails(article);
@@ -132,8 +132,8 @@ const Article = () => {
         },
       });
       if (!response.ok) {
-        const { errors } = await response.json();
-        setCommentsError(errors);
+        // const { errors } = await response.json();
+        // setCommentsError(errors);
       } else {
         const { comments } = await response.json();
         setComments(comments);

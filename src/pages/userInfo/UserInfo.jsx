@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 
-import { Link, useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 
 import { USER_PROFILE_API, ARTICLES_API } from '../../Constants';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -57,7 +57,7 @@ const UserInfo = () => {
     }
 
     fetchUserProfile();
-  }, [])
+  }, [username])
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -80,7 +80,7 @@ const UserInfo = () => {
         <div className="container">
           <div className="row">
             <div className="col-xs-12 col-md-10 offset-md-1">
-              <img src={userProfile.image}></img>
+              <img src={userProfile.image} alt={userProfile.image} />
               <h3 className="text-center mt-3">{username}</h3>
             </div>
           </div>
