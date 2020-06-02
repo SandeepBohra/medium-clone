@@ -8,10 +8,12 @@ import ProtectedRoute from './routes/ProtectedRoute';
 
 import Header from './components/header/Header';
 import Home from './pages/home/Home';
+import Article from './pages/article/Article';
 import Login from './pages/login/Login';
 import Register from './pages/register/Register';
 import UserInfo from './pages/userInfo/UserInfo';
 import UserSettings from './pages/userSettings/UserSettings';
+import NewArticle from './pages/newArticle/NewArticle';
 import Dashboard from './pages/dashboard/Dashboard';
 
 import './App.css';
@@ -27,6 +29,9 @@ function App() {
               <Route exact path="/">
                 <Home />
               </Route>
+              <Route exact path="/article/:slug">
+                <Article />
+              </Route>
               <Route exact path="/login">
                 <Login />
               </Route>
@@ -39,6 +44,7 @@ function App() {
               <Route exact path="/user-settings">
                 <UserSettings />
               </Route>
+              <ProtectedRoute isLoggedIn={context.isLoggedIn} component={NewArticle} />
               <ProtectedRoute isLoggedIn={context.isLoggedIn} component={Dashboard}/>
             </Switch>
           </div>

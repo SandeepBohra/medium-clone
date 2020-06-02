@@ -65,6 +65,10 @@
   font-weight: 500!important;
 }
 
+.posted-date {
+  margin-top: 10px;
+}
+
 .user-avatar {
   height: 50px;
   width: 50px;
@@ -75,4 +79,16 @@
   font-weight: 600 !important;
   font-size: 1.5rem !important;
   margin-bottom: 3px;
+}
+
+.article > a {
+  text-decoration: none;
+}
+
+.article > a > p, div {
+  color: #bbb;
+}
+
+.article > a > h2 {
+  color: black;
 }

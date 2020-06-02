@@ -1,8 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 
-import { Link, useHistory } from 'react-router-dom';
-import moment from 'moment';
-import { POPULAR_TAGS_API, ARTICLES_API, IMG_SRC } from '../../Constants';
+import { useHistory } from 'react-router-dom';
+import { POPULAR_TAGS_API, ARTICLES_API } from '../../Constants';
+
+import ArticlesList from './articlesList/ArticlesList';
 
 // Context
 import { AuthContext } from '../../contexts/AuthContext';
@@ -24,7 +25,7 @@ const Home = () => {
   const [totalArticles, setTotalArticles] = useState(null);
   const [tags, setTags] = useState(null);
 
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('');
 
   const [tagSelected, setTagSelected] = useState(null);
 
@@ -123,11 +124,18 @@ const Home = () => {
             <div className="col-md-9">
               <div className="article-tabs">
                 <ul className="nav nav-tabs">
+                  {isLoggedIn && (<li className="nav-item all-articles" onClick={allArticles}>
+                    <button
+                      id="all"
+                      className={`nav-link ${isLoggedIn ? 'active' : ''}`}
+                    >
+                      Your Articles
+                    </button>
+                  </li>)}
                   <li className="nav-item all-articles" onClick={allArticles}>
                     <button
                       id="all"
                       className={`nav-link ${activeTab === 'all' ? 'active' : ''}`}
-                      href="#"
                     >
                       All Articles
                     </button>
@@ -135,36 +143,12 @@ const Home = () => {
                   {tagSelected && (<li className="nav-item">
                     <button
                       className={`nav-link ${activeTab === 'tag' ? 'active' : ''}`}
-                      href="#"
                     >
                       {`#${tagSelected}`}
                     </button>
                   </li>)}
                 </ul>
-                <div className="articles-list">
-                  {articles && articles.map(article => (
-                    <div key={article.slug} className="article text-left">
-                      <div className="article-info">
-                        <Link to={`/user/${article.author.username}`}>
-                          <img src={IMG_SRC} className="user-avatar" alt={article.author.username} />
-                        </Link>
-                        <div className="info">
-                          <Link to={`/user/${article.author.username}`} className="article-author">
-                            {article.author.username}
-                          </Link>
-                          <div className="posted-date">{moment(article.createdAt).format('MMMM D, YYYY')}</div>
-                        </div>
-                        <button className="float-right" onClick={toggleFavorite}>Favorite</button>
-                      </div>
-
-                      <Link to={`/article/${article.slug}`}>
-                        <h2>{article.title}</h2>
-                        <p>{article.body}</p>
-                        <div>read more....</div>
-                      </Link>
-                    </div>
-                  ))}
-                </div>
+                <ArticlesList articles={articles} toggleFavorite={toggleFavorite} />
               </div>
               
             </div>
