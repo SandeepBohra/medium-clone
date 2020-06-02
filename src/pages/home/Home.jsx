@@ -22,14 +22,14 @@ const Home = () => {
   const newFetchURL = new URL(fetchURL);
 
   const [articles, setArticles] = useState(null);
-  const [totalArticles, setTotalArticles] = useState(null);
+  // const [totalArticles, setTotalArticles] = useState(null);
   const [tags, setTags] = useState(null);
 
   const [activeTab, setActiveTab] = useState('');
 
   const [tagSelected, setTagSelected] = useState(null);
 
-  const [articlesError, setArticlesError] = useState(null);
+  // const [articlesError, setArticlesError] = useState(null);
   // const [tagsError, setTagsError] = useState(null);
 
   const onTagClick = (tag) => {
@@ -67,20 +67,20 @@ const Home = () => {
     const fetchArticles = async () => {
       const response = await fetch(ARTICLES_API);
       if (!response.ok) {
-        const { errors } = await response.json();
-        setArticlesError(errors);
+        // const { errors } = await response.json();
+        // setArticlesError(errors);
       } else {
-        const { articles, articlesCount } = await response.json();
+        const { articles } = await response.json();
         setArticles(articles);
-        setTotalArticles(articlesCount);
+        // setTotalArticles(articlesCount);
       }
     }
 
     const fetchTags = async () => {
       const response = await fetch(POPULAR_TAGS_API);
       if (!response.ok) {
-        const { errors } = await response.json();
-        setArticlesError(errors);
+        // const { errors } = await response.json();
+        // setArticlesError(errors);
       } else {
         const { tags } = await response.json();
         setTags(tags);
@@ -96,12 +96,12 @@ const Home = () => {
     const fetchArticles = async () => {
       const response = await fetch(fetchURL);
       if (!response.ok) {
-        const { errors } = await response.json();
-        setArticlesError(errors);
+        // const { errors } = await response.json();
+        // setArticlesError(errors);
       } else {
-        const { articles, articlesCount } = await response.json();
+        const { articles } = await response.json();
         setArticles(articles);
-        setTotalArticles(articlesCount);
+        // setTotalArticles(articlesCount);
       }
     }
 

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 
-// import jwt from 'jwt-decode';
+import jwt from 'jwt-decode';
 
 import History from '../utils/History';
 
@@ -12,7 +12,8 @@ export const AuthContext = createContext({
 export const AuthState = (props) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+  const [username, setUsername] = useState('');
 
   const logout = () => {
     setLoggedIn(false);
@@ -25,8 +26,8 @@ export const AuthState = (props) => {
       setLoggedIn(true);
       setToken(newToken);
       localStorage.setItem('token', newToken);
-      // const { username } = jwt(newToken);
-      // setUserName(username);
+      const { username } = jwt(newToken);
+      setUsername(username);
     }
   }
 
@@ -42,6 +43,8 @@ export const AuthState = (props) => {
     setAuth: setAuth,
     user: user,
     setUser: setUser,
+    username: username,
+    setUsername: setUsername,
     token: token,
   };
 

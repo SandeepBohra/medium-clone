@@ -19,10 +19,10 @@ const ArticlesList = ({ articles, toggleFavorite }) => {
               <div className="posted-date">{moment(article.createdAt).format('MMMM D, YYYY')}</div>
             </div>
             <button
-              className="float-right"
+              className="btn btn-success float-right"
               onClick={toggleFavorite}
             >
-              Favorite
+              {`${article.favorited ? 'Unfavorite' : 'Favorite'} (${article.favoritesCount})`}
             </button>
           </div>
 

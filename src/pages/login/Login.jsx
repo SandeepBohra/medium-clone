@@ -12,7 +12,7 @@ import './Login.css';
 const Login = () => {
 
   const authContext = useContext(AuthContext);
-  const { isLoggedIn, setAuth, user, setUser } = authContext;
+  const { isLoggedIn, setAuth, setUser } = authContext;
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -93,9 +93,10 @@ const Login = () => {
       const { errors } = await response.json();
       setApiError(errors);
     } else {
-      const { user: { token }} = await response.json();
-      setAuth(token);
+      const { user } = await response.json();
+      setAuth(user.token);
       setUser(user);
+      localStorage.setItem('user', JSON.stringify(user));
     }
   }
 

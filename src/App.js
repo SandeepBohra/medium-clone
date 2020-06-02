@@ -41,7 +41,7 @@ function App() {
               <Route exact path="/user/:username">
                 <UserInfo />
               </Route>
-              <Route exact path="/user-settings">
+              <Route exact path="/settings">
                 <UserSettings />
               </Route>
               <ProtectedRoute isLoggedIn={context.isLoggedIn} component={NewArticle} />

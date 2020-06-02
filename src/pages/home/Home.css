@@ -85,7 +85,7 @@
   text-decoration: none;
 }
 
-.article > a > p, div {
+.article > a > div {
   color: #bbb;
 }
 
