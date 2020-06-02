@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 import moment from 'moment';
 
-import { ARTICLE_API, IMG_SRC } from '../../Constants';
+import { ARTICLE_API } from '../../Constants';
 
 import { AuthContext } from '../../contexts/AuthContext';
 
@@ -10,8 +10,9 @@ import './Article.css';
 
 
 const Article = () => {
+  const history = useHistory();
   const { slug } = useParams();
-  const { isLoggedIn, token } = useContext(AuthContext);
+  const { isLoggedIn, token, username } = useContext(AuthContext);
 
   const fetchArticleURL = `${ARTICLE_API}/${slug}`;
 
@@ -22,6 +23,60 @@ const Article = () => {
   const [commentsError, setCommentsError] = useState(null);
 
   const [commentText, setCommentText] = useState('');
+
+  const toggleFavorite = async () => {
+    if (!isLoggedIn) {
+      history.push('/login?destination='+window.location.pathname);
+    } else {
+      if (articleDetails.favorited) {
+        const response = await fetch(`${fetchArticleURL}/favorite`, {
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'authorization': `Token ${token}`,        
+          },
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          setArticleDetails({
+            ...articleDetails,
+            favorited: false,
+          })
+        }
+      } else {
+        const response = await fetch(`${fetchArticleURL}/favorite`, {
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'authorization': `Token ${token}`,        
+          },
+          method: 'POST',
+        });
+
+        if (response.ok) {
+          setArticleDetails({
+            ...articleDetails,
+            favorited: true,
+          })
+        }
+      }
+    }
+  }
+
+  const deleteArticle = async () => {
+    const response = await fetch(fetchArticleURL, {
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'authorization': `Token ${token}`,        
+      },
+      method: 'DELETE',
+    })
+
+    if (!response.ok) {
+
+    } else {
+      history.push('/');
+    }
+  }
 
   const postComment = async (event) => {
     event.preventDefault();
@@ -52,7 +107,13 @@ const Article = () => {
   useEffect(() => {
 
     const fetchArticleDetail = async () => {
-      const response = await fetch(fetchArticleURL);
+      const response = await fetch(fetchArticleURL, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          // 'authorization': `Token ${token ? token : ''}`,        
+        },
+      });
       if (!response.ok) {
         const { errors } = await response.json();
         setArticleError(errors);
@@ -63,7 +124,13 @@ const Article = () => {
     }
 
     const fetchComments = async () => {
-      const response = await fetch(`${fetchArticleURL}/comments`);
+      const response = await fetch(`${fetchArticleURL}/comments`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          // 'authorization': `Token ${token ? token : ''}`,        
+        },
+      });
       if (!response.ok) {
         const { errors } = await response.json();
         setCommentsError(errors);
@@ -82,7 +149,7 @@ const Article = () => {
     return (
       <div className="article-info">
         <Link to={`/user/${articleDetails.author.username}`}>
-          <img src={IMG_SRC} className="user-avatar" alt={articleDetails.author.username} />
+          <img src={articleDetails.author.image} className="user-avatar" alt={articleDetails.author.username} />
         </Link>
         <div className="info">
           <Link to={`/user/${articleDetails.author.username}`} className="article-author">
@@ -90,7 +157,20 @@ const Article = () => {
           </Link>
           <div className="posted-date">{moment(articleDetails.createdAt).format('MMMM D, YYYY')}</div>
         </div>
-        <button>{`Favorite Article (${articleDetails.favoritesCount})`}</button>
+        {username !== articleDetails.author.username && (
+          <button
+            className="btn btn-success"
+            onClick={toggleFavorite}
+          >
+            {!articleDetails.favorited ? `Favorite Article (${articleDetails.favoritesCount})` : `Unfavorite Article (${articleDetails.favoritesCount})`}
+          </button>
+        )}
+        {isLoggedIn && username === articleDetails.author.username && (
+          <span className="can-edit-delete">
+            <button className="btn btn-secondary">Edit Article</button>
+            <button className="btn btn-danger" onClick={() => deleteArticle()}>Delete Article</button>
+          </span>
+        )}
       </div>
     )
   }

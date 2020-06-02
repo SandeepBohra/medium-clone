@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { ARTICLE_API } from '../../Constants';
 
 import './NewArticle.css';
 
 const NewArticle = () => {
+
+  const history = useHistory();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -43,6 +46,11 @@ const NewArticle = () => {
     if (!response.ok) {
       const { errors } = await response.json();
       setErrors(errors);
+    } else {
+      const { article } = await response.json();
+      if (article.slug) {
+        history.push(`/article/${article.slug}`);
+      }
     }
     setLoading(false);
   }

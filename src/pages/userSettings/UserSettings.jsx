@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 
 // import { Link } from 'react-router-dom';
+import { SINGLE_USER_API } from '../../Constants';
 
 import { AuthContext } from '../../contexts/AuthContext';
 
@@ -8,10 +9,10 @@ import './UserSettings.css';
 
 const UserSettings = () => {
 
-  const { user } = useContext(AuthContext);
+  const { user, token, setAuth, setUser } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
-    profilePic: user.image,
+    image: user.image,
     username: user.username,
     bio: user.bio,
     email: user.email,
@@ -21,11 +22,34 @@ const UserSettings = () => {
   const [apiError, setApiError] = useState(null);
 
   const handleInputChange = (event) => {
+    const { name, value } = event.target;
 
+    setFormData({
+      ...formData,
+      [name]: value,
+    })
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const response = await fetch(SINGLE_USER_API, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'authorization': `Token ${token}`,        
+      },
+      body: JSON.stringify({...formData}),
+    })
 
+    if (!response.ok) {
+      const { errors } = await response.json();
+      setApiError(errors);
+    } else {
+      const { user } = await response.json();
+      setAuth(user.token);
+      setUser(user);
+      localStorage.setItem('user', JSON.stringify(user));
+    }
   }
 
 
@@ -41,7 +65,7 @@ const UserSettings = () => {
               className="form-control"
               name="profilePic"
               placeholder="URL of profile picture"
-              value={formData.profilePic}
+              value={formData.image}
               onChange={handleInputChange}
             />
           </div>

@@ -7,7 +7,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 import './Header.css';
 
 const Header = () => {
-  const { isLoggedIn, logout, userName } = useContext(AuthContext);
+  const { isLoggedIn, logout, user } = useContext(AuthContext);
   return (
     <nav className="navbar">
       <div className="container">
@@ -30,14 +30,14 @@ const Header = () => {
             <Link className="nav-link" to="/">Home</Link>
           </li>
           <li className="nav-item d-inline-block items">
-            <Link className="nav-link" to="/login">Account Settings</Link>
+            <Link className="nav-link" to="/settings">Settings</Link>
           </li>
           <li className="nav-item d-inline-block items">
             <Link className="nav-link" to="/new-article">New Article</Link>
           </li>
-          <li className="nav-item d-inline-block items">
-            <Link className="nav-link" to={`/user/${userName}`}>{userName}</Link>
-          </li>
+          {user && user.username && (<li className="nav-item d-inline-block items">
+            <Link className="nav-link" to={`/user/${user.username}`}>{user.username}</Link>
+          </li>)}
           <li className="nav-item d-inline-block items" onClick={logout}>
             <Link className="nav-link" to="/home">Log Out</Link>
           </li>
