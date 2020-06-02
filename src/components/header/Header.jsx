@@ -33,7 +33,7 @@ const Header = () => {
             <Link className="nav-link" to="/login">Account Settings</Link>
           </li>
           <li className="nav-item d-inline-block items">
-            <Link className="nav-link" to="/register">New Article</Link>
+            <Link className="nav-link" to="/new-article">New Article</Link>
           </li>
           <li className="nav-item d-inline-block items">
             <Link className="nav-link" to={`/user/${userName}`}>{userName}</Link>

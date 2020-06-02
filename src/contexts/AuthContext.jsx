@@ -42,6 +42,7 @@ export const AuthState = (props) => {
     setAuth: setAuth,
     user: user,
     setUser: setUser,
+    token: token,
   };
 
   return (<AuthContext.Provider value={authContext}>{props.children}</AuthContext.Provider>);

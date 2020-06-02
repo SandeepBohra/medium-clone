@@ -10,3 +10,5 @@ export const POPULAR_TAGS_API = "https://conduit.productionready.io/api/tags";
 export const ARTICLES_API = "https://conduit.productionready.io/api/articles?limit=10&offset=0";
 
 export const IMG_SRC = "https://static.productionready.io/images/smiley-cyrus.jpg";
+
+export const ARTICLE_API = "https://conduit.productionready.io/api/articles"
