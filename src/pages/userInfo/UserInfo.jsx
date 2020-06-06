@@ -2,12 +2,16 @@ import React, { useEffect, useState, useContext } from 'react';
 
 import { useParams, useHistory } from 'react-router-dom';
 
-import { USER_PROFILE_API, ARTICLES_API } from '../../Constants';
+import { USER_PROFILE_API, ARTICLES_API, ARTICLE_API } from '../../Constants';
 import { AuthContext } from '../../contexts/AuthContext';
 
 import ArticlesList from '../../components/articlesList/ArticlesList';
+import Pagination from '../../components/pagination/Pagination';
 
 import './UserInfo.css';
+import Loader from '../../components/loader/Loader';
+
+const ITEMS_PER_PAGE = 5;
 
 const UserInfo = () => {
 
@@ -15,15 +19,19 @@ const UserInfo = () => {
 
   const history = useHistory();
 
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, token } = useContext(AuthContext);
 
-  const [fetchArticlesURL, setFetchArticlesURL] = useState(`${ARTICLES_API}&author=${username}`);
+  const [fetchArticlesURL, setFetchArticlesURL] = useState(`${ARTICLES_API}?author=${username}&limit=${ITEMS_PER_PAGE}&offset=0`);
   const newURL = new URL(fetchArticlesURL);
 
   const [userProfile, setUserProfile] = useState(null);
+
+  const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState(null);
+  const [totalArticles, setTotalArticles] = useState(null);
 
   const [tab, setTab] = useState('my-articles');
+  const [page, setPage] = useState(1);
 
   const handleTabClick = (tabId) => {
     setTab(tabId);
@@ -38,11 +46,30 @@ const UserInfo = () => {
     setFetchArticlesURL(newURL.href);
   }
 
-  const toggleFavorite = () => {
+  const handlePageClick = (pageClicked) => {
+    newURL.searchParams.set('offset', (pageClicked - 1)*ITEMS_PER_PAGE);
+    setFetchArticlesURL(newURL.href);
+    setPage(pageClicked)
+  }
+
+  const toggleFavorite = async (slug) => {
+    const favArticleURL = `${ARTICLE_API}/${slug}/favorite`;
     if (!isLoggedIn) {
       history.push('/login?destination='+window.location.pathname);
     } else {
-      
+      const selectedArticle = articles && articles.length && articles.filter(a => a.slug === slug)[0];
+      const selectedArticleIndex = articles && articles.length && articles.findIndex(a => a.slug === slug);
+      const response = await fetch(`${favArticleURL}`, {
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          'authorization': `Token ${token}`,        
+        },
+        method: selectedArticle.favorited ? 'DELETE' : 'POST',
+      });
+      const { article } = await response.json();
+      const nArticles = [...articles];
+      nArticles[selectedArticleIndex] = article;
+      setArticles(nArticles);
     }
   }
 
@@ -56,21 +83,32 @@ const UserInfo = () => {
       }
     }
 
+    setFetchArticlesURL(`${ARTICLES_API}?author=${username}&limit=10`)
+
     fetchUserProfile();
   }, [username])
 
   useEffect(() => {
     const fetchArticles = async () => {
       setArticles(null);
-      const response = await fetch(fetchArticlesURL);
+      setLoading(true);
+      const response = await fetch(fetchArticlesURL, {
+        method: 'GET',
+        headers: isLoggedIn || localStorage.getItem('token') ? {
+          'Content-Type': 'application/json;charset=UTF-8',
+          'authorization': `Token ${token}`,        
+        }: {},
+      });
       if (response.ok) {
-        const { articles } = await response.json();
+        const { articles, articlesCount } = await response.json();
         setArticles(articles);
+        setTotalArticles(articlesCount);
       }
+      setLoading(false);
     }
 
     fetchArticles();
-  }, [fetchArticlesURL])
+  }, [fetchArticlesURL, isLoggedIn, token])
   
 
   return (
@@ -111,7 +149,17 @@ const UserInfo = () => {
                     </button>
                   </li>
                 </ul>
-                <ArticlesList articles={articles} toggleFavorite={toggleFavorite} />
+
+                <div className="articles-list text-center">
+                  {loading && <Loader />}
+                  <ArticlesList articles={articles} toggleFavorite={toggleFavorite} totalArticles={totalArticles} />
+                  {!loading && <Pagination
+                  itemsPerPage={ITEMS_PER_PAGE}
+                  totalPageCount={totalArticles}
+                  activePage={page}
+                  setActivePage={handlePageClick}
+                  />}
+                </div>
               </div>
 
 

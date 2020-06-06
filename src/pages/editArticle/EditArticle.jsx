@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { ARTICLE_API } from '../../Constants';
-
-import './NewArticle.css';
 
 const NewArticle = () => {
 
   const history = useHistory();
+  const { slug } = useParams();
+
+  const fetchArticleURL = `${ARTICLE_API}/${slug}`;
 
   const [formData, setFormData] = useState({
     title: '',
@@ -32,15 +33,14 @@ const NewArticle = () => {
     event.preventDefault();
     setErrors(null);
     setLoading(true);
-    const response = await fetch(ARTICLE_API, {
-      method: 'POST',
+    const response = await fetch(fetchArticleURL, {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
         'authorization': `Token ${localStorage.getItem('token')}`,        
       },
       body: JSON.stringify({
         ...formData,
-        tagList: formData.tagList.split(","),
       })
     })
 
@@ -56,6 +56,33 @@ const NewArticle = () => {
     setLoading(false);
   }
 
+  useEffect(() => {
+    const fetchArticleDetails = async () => {
+      const response = await fetch(fetchArticleURL, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          // 'authorization': `Token ${token ? token : ''}`,        
+        },
+      });
+      if (!response.ok) {
+        // const { errors } = await response.json();
+        // setArticleError(errors);
+      } else {
+        const { article } = await response.json();
+        setFormData(f => ({
+          ...f,
+          title: article.title,
+          body: article.body,
+          description: article.description,
+          tagList: article.tagList,
+        }))
+      }
+    }
+
+    fetchArticleDetails();
+  }, [fetchArticleURL])
+
   return (
     <div className="container new-article">
       <div className="row">
@@ -63,7 +90,7 @@ const NewArticle = () => {
           <ul>
             {errors && Object.keys(errors).map(e => (
               <li className="error" key={e}>
-                {errors[e].map(er => (<div key={er} className="error">{`${e} ${er}`}</div>))}
+                {errors[e].map(er => (<div className="error">{`${e} ${er}`}</div>))}
               </li>
             ))}
             </ul>

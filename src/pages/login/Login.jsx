@@ -101,7 +101,7 @@ const Login = () => {
   }
 
   if (isLoggedIn) {
-    return (<Redirect to="/dashboard" />)
+    return (<Redirect to="/" />)
   }
   
   return (

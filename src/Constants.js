@@ -9,9 +9,9 @@ export const LOGIN_API = "https://conduit.productionready.io/api/users/login";
 
 export const POPULAR_TAGS_API = "https://conduit.productionready.io/api/tags";
 
-export const YOUR_FEED_API = "https://conduit.productionready.io/api/articles/feed?limit=10&offset=0";
+export const FETCH_USER_ARTICLES_API = "https://conduit.productionready.io/api/articles/feed?limit=10&offset=0";
 
-export const ARTICLES_API = "https://conduit.productionready.io/api/articles?limit=10&offset=0";
+export const ARTICLES_API = "https://conduit.productionready.io/api/articles";
 
 export const IMG_SRC = "https://static.productionready.io/images/smiley-cyrus.jpg";
 

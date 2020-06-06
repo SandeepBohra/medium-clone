@@ -1,31 +1,38 @@
 import React, { useState, useContext, useEffect } from 'react';
 
 import { useHistory } from 'react-router-dom';
-import { POPULAR_TAGS_API, ARTICLES_API } from '../../Constants';
+import { POPULAR_TAGS_API, ARTICLES_API, ARTICLE_API, FETCH_USER_ARTICLES_API } from '../../Constants';
 
-import ArticlesList from './articlesList/ArticlesList';
+import ArticlesList from '../../components/articlesList/ArticlesList';
+import Pagination from '../../components/pagination/Pagination';
+import Loader from '../../components/loader/Loader';
 
 // Context
 import { AuthContext } from '../../contexts/AuthContext';
 
 import './Home.css';
 
+const ITEMS_PER_PAGE = 10;
 
 const Home = () => {
 
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, token } = useContext(AuthContext);
 
   const history = useHistory();
 
-  const [fetchURL, setFetchURL] = useState(ARTICLES_API);
+  const [fetchURL, setFetchURL] = useState(isLoggedIn ? FETCH_USER_ARTICLES_API : `${ARTICLES_API}?limit=${ITEMS_PER_PAGE}&offset=0`);
 
   const newFetchURL = new URL(fetchURL);
 
+  const [loading, setLoading] = useState(false);
+
   const [articles, setArticles] = useState(null);
-  // const [totalArticles, setTotalArticles] = useState(null);
+  const [totalArticles, setTotalArticles] = useState(null);
   const [tags, setTags] = useState(null);
 
-  const [activeTab, setActiveTab] = useState('');
+  const [page, setPage] = useState(1);
+
+  const [activeTab, setActiveTab] = useState(isLoggedIn ? 'your-articles' : 'all-articles');
 
   const [tagSelected, setTagSelected] = useState(null);
 
@@ -33,7 +40,7 @@ const Home = () => {
   // const [tagsError, setTagsError] = useState(null);
 
   const onTagClick = (tag) => {
-    setActiveTab('tag');
+    setActiveTab('tag-articles');
     setTagSelected(tag);
     setArticles(null);
 
@@ -45,69 +52,81 @@ const Home = () => {
     setFetchURL(newFetchURL.href);
   }
 
-  const allArticles = () => {
-    setActiveTab('all');
+  const yourArticles = () => {
+    setActiveTab('your-articles');
     setTagSelected(null);
     setArticles(null);
-
-    if (newFetchURL.searchParams.has('tag')) {
-      newFetchURL.searchParams.delete('tag');
-    }
-    setFetchURL(newFetchURL.href);
+    setFetchURL(FETCH_USER_ARTICLES_API);
   }
 
-  const toggleFavorite = () => {
+  const allArticles = () => {
+    setActiveTab('all-articles');
+    setTagSelected(null);
+    setArticles(null);
+    setFetchURL(`${ARTICLES_API}?limit=${ITEMS_PER_PAGE}&offset=0`);
+  }
+
+  const handlePageClick = (pageClicked) => {
+    newFetchURL.searchParams.set('offset', (pageClicked - 1)*ITEMS_PER_PAGE);
+    setFetchURL(newFetchURL.href);
+    setPage(pageClicked)
+  }
+
+  const toggleFavorite = async (slug) => {
+    const favArticleURL = `${ARTICLE_API}/${slug}/favorite`;
     if (!isLoggedIn) {
       history.push('/login?destination='+window.location.pathname);
+    } else {
+      const selectedArticle = articles && articles.length && articles.filter(a => a.slug === slug)[0];
+      const selectedArticleIndex = articles && articles.length && articles.findIndex(a => a.slug === slug);
+      const response = await fetch(`${favArticleURL}`, {
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          'authorization': `Token ${token}`,        
+        },
+        method: selectedArticle.favorited ? 'DELETE' : 'POST',
+      });
+      const { article } = await response.json();
+      const nArticles = [...articles];
+      nArticles[selectedArticleIndex] = article;
+      setArticles(nArticles);
     }
   }
 
   useEffect(() => {
-
-    const fetchArticles = async () => {
-      const response = await fetch(ARTICLES_API);
-      if (!response.ok) {
-        // const { errors } = await response.json();
-        // setArticlesError(errors);
-      } else {
-        const { articles } = await response.json();
-        setArticles(articles);
-        // setTotalArticles(articlesCount);
-      }
-    }
-
     const fetchTags = async () => {
       const response = await fetch(POPULAR_TAGS_API);
-      if (!response.ok) {
-        // const { errors } = await response.json();
-        // setArticlesError(errors);
-      } else {
+      if (response.ok) {
         const { tags } = await response.json();
         setTags(tags);
       }
     }
 
-    fetchArticles();
     fetchTags();
   }, [])
 
   useEffect(() => {
 
     const fetchArticles = async () => {
-      const response = await fetch(fetchURL);
-      if (!response.ok) {
-        // const { errors } = await response.json();
-        // setArticlesError(errors);
-      } else {
-        const { articles } = await response.json();
+      setArticles(null);
+      setLoading(true);
+      const response = await fetch(fetchURL, {
+        headers: isLoggedIn || localStorage.getItem('token') ? {
+          'Content-Type': 'application/json;charset=UTF-8',
+          'authorization': `Token ${token}`,        
+        }: {}
+      });
+      if (response.ok) {
+        const { articles, articlesCount } = await response.json();
         setArticles(articles);
-        // setTotalArticles(articlesCount);
+        setTotalArticles(articlesCount);
       }
+      setLoading(false);
     }
 
     fetchArticles();
 
-  }, [fetchURL])
+  }, [fetchURL, token, isLoggedIn, page])
 
   return (
     <div className="home text-center">
@@ -124,10 +143,10 @@ const Home = () => {
             <div className="col-md-9">
               <div className="article-tabs">
                 <ul className="nav nav-tabs">
-                  {isLoggedIn && (<li className="nav-item all-articles" onClick={allArticles}>
+                  {isLoggedIn && (<li className="nav-item all-articles" onClick={yourArticles}>
                     <button
                       id="all"
-                      className={`nav-link ${isLoggedIn ? 'active' : ''}`}
+                      className={`nav-link ${isLoggedIn && activeTab === 'your-articles' ? 'active' : ''}`}
                     >
                       Your Articles
                     </button>
@@ -135,20 +154,42 @@ const Home = () => {
                   <li className="nav-item all-articles" onClick={allArticles}>
                     <button
                       id="all"
-                      className={`nav-link ${activeTab === 'all' ? 'active' : ''}`}
+                      className={`nav-link ${activeTab === 'all-articles' ? 'active' : ''}`}
                     >
                       All Articles
                     </button>
                   </li>
                   {tagSelected && (<li className="nav-item">
                     <button
-                      className={`nav-link ${activeTab === 'tag' ? 'active' : ''}`}
+                      className={`nav-link ${activeTab === 'tag-articles' ? 'active' : ''}`}
                     >
                       {`#${tagSelected}`}
                     </button>
                   </li>)}
                 </ul>
-                <ArticlesList articles={articles} toggleFavorite={toggleFavorite} />
+                <div className="articles-list">
+                {!loading && articles && articles.length ? (
+                  <ArticlesList
+                    articles={articles}
+                    toggleFavorite={toggleFavorite}
+                    totalArticles={totalArticles} 
+                  />
+                ): null}
+                {!loading && (
+                  <Pagination
+                  itemsPerPage={ITEMS_PER_PAGE}
+                  totalPageCount={totalArticles}
+                  activePage={page}
+                  setActivePage={handlePageClick}
+                />
+                )}
+                
+                {loading && <Loader />}
+                </div>
+                
+                {articles && articles.length === 0 ? (
+                  <div className="no-articles-yet">No Articles yet.</div>
+                ): null}
               </div>
               
             </div>

@@ -1,1 +1,18 @@
 
+.favorite-btn-style {
+  border: 1px solid #28a745;
+  background-color: transparent;
+  color: #28a745;
+}
+
+.favorite-btn-style:hover {
+  cursor: pointer;
+  border: 1px solid green;
+  background-color: green;
+  color: white;
+}
+
+.favorite-btn-style:focus {
+  outline: none;
+  box-shadow: none;
+}

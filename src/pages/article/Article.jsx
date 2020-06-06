@@ -28,36 +28,30 @@ const Article = () => {
     if (!isLoggedIn) {
       history.push('/login?destination='+window.location.pathname);
     } else {
+      let response = null;
       if (articleDetails.favorited) {
-        const response = await fetch(`${fetchArticleURL}/favorite`, {
+        response = await fetch(`${fetchArticleURL}/favorite`, {
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             'authorization': `Token ${token}`,        
           },
           method: 'DELETE',
         });
-
-        if (response.ok) {
-          setArticleDetails({
-            ...articleDetails,
-            favorited: false,
-          })
-        }
       } else {
-        const response = await fetch(`${fetchArticleURL}/favorite`, {
+        response = await fetch(`${fetchArticleURL}/favorite`, {
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             'authorization': `Token ${token}`,        
           },
           method: 'POST',
         });
-
-        if (response.ok) {
-          setArticleDetails({
-            ...articleDetails,
-            favorited: true,
-          })
-        }
+      }
+      if (response.ok) {
+        const { article } = await response.json();
+        setArticleDetails({
+          ...articleDetails,
+          ...article,
+        })
       }
     }
   }
@@ -159,7 +153,7 @@ const Article = () => {
         </div>
         {username !== articleDetails.author.username && (
           <button
-            className="btn btn-success"
+            className={`btn ${!articleDetails.favorited ? 'favorite-btn-style' : 'btn-success'}`}
             onClick={toggleFavorite}
           >
             {!articleDetails.favorited ? `Favorite Article (${articleDetails.favoritesCount})` : `Unfavorite Article (${articleDetails.favoritesCount})`}
@@ -167,7 +161,9 @@ const Article = () => {
         )}
         {isLoggedIn && username === articleDetails.author.username && (
           <span className="can-edit-delete">
-            <button className="btn btn-secondary">Edit Article</button>
+            <Link to={`/editor/${slug}`}>
+              <button className="btn btn-secondary">Edit Article</button>            
+            </Link>
             <button className="btn btn-danger" onClick={() => deleteArticle()}>Delete Article</button>
           </span>
         )}

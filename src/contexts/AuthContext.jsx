@@ -17,8 +17,12 @@ export const AuthState = (props) => {
 
   const logout = () => {
     setLoggedIn(false);
+    setToken(null);
+    setUsername('');
+    setUser(null);
     localStorage.removeItem('token');
-    History.push('/');
+    localStorage.removeItem('user');
+    History.push('/home');
   };
 
   const setAuth = (newToken) => {

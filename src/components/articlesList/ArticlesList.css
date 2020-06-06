@@ -1,0 +1,18 @@
+.articles-list .no-articles-yet {
+  margin-top: 10px;
+  border: 1px solid lightgrey;
+  padding: 20px 50px;
+}
+
+.article .article-tags {
+  margin: 10px 0;
+}
+
+.article-tag {
+  display: inline-block;
+  font-size: 12px;
+  margin-right: 5px;
+  padding: 5px;
+  border: 1px solid lightgrey;
+  border-radius: 10px;
+}

@@ -20,6 +20,7 @@ const UserSettings = () => {
   });
 
   const [apiError, setApiError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -32,6 +33,7 @@ const UserSettings = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
     const response = await fetch(SINGLE_USER_API, {
       method: 'PUT',
       headers: {
@@ -50,6 +52,7 @@ const UserSettings = () => {
       setUser(user);
       localStorage.setItem('user', JSON.stringify(user));
     }
+    setLoading(false);
   }
 
 
@@ -59,62 +62,65 @@ const UserSettings = () => {
         <div className="col-md-6 offset-md-3 col-xs-12">
         <h1 className="text-center">User Settings</h1>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <input
-              type="text"
-              className="form-control"
-              name="profilePic"
-              placeholder="URL of profile picture"
-              value={formData.image}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="form-group">
-            <input
-              type="text"
-              className="form-control"
-              name="username"
-              placeholder="Username"
-              value={formData.username}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="form-group">
-            <textarea
-              className="form-control"
-              name="username"
-              placeholder="Short bio about you"
-              rows="10"
-              value={formData.bio}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="form-group">
-            <input
-              type="email"
-              className="form-control"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="form-group">
-            <input
-              type="password"
-              className="form-control"
-              name="password"
-              placeholder="New Password"
-              value={formData.password}
-              onChange={handleInputChange}
-            />
-          </div>
-          <button
-            type="submit"
-            className="btn btn-primary float-right"
-          >
-            Update Settings
-          </button>
+          <fieldset disabled={loading}>
+            <div className="form-group">
+              <input
+                type="text"
+                className="form-control"
+                name="profilePic"
+                placeholder="URL of profile picture"
+                value={formData.image}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <input
+                type="text"
+                className="form-control"
+                name="username"
+                placeholder="Username"
+                value={formData.username}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <textarea
+                className="form-control"
+                name="username"
+                placeholder="Short bio about you"
+                rows="10"
+                value={formData.bio}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <input
+                type="email"
+                className="form-control"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <input
+                type="password"
+                className="form-control"
+                name="password"
+                placeholder="New Password"
+                value={formData.password}
+                onChange={handleInputChange}
+              />
+            </div>
+            <button
+              type="submit"
+              className="btn btn-primary float-right"
+            >
+              Update Settings
+            </button>
+          </fieldset>
+          
           {apiError && Object.keys(apiError).map(e => (
             <div className="error" key={e}>{`${e} ${apiError[e]}`}</div>
           ))}

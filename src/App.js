@@ -14,7 +14,7 @@ import Register from './pages/register/Register';
 import UserInfo from './pages/userInfo/UserInfo';
 import UserSettings from './pages/userSettings/UserSettings';
 import NewArticle from './pages/newArticle/NewArticle';
-import Dashboard from './pages/dashboard/Dashboard';
+import EditArticle from './pages/editArticle/EditArticle';
 
 import './App.css';
 
@@ -27,6 +27,9 @@ function App() {
             <Header />
             <Switch>
               <Route exact path="/">
+                <Home />
+              </Route>
+              <Route exact path="/home">
                 <Home />
               </Route>
               <Route exact path="/article/:slug">
@@ -44,8 +47,10 @@ function App() {
               <Route exact path="/settings">
                 <UserSettings />
               </Route>
-              <ProtectedRoute isLoggedIn={context.isLoggedIn} component={NewArticle} />
-              <ProtectedRoute isLoggedIn={context.isLoggedIn} component={Dashboard}/>
+              <ProtectedRoute path="/editor" isLoggedIn={context.isLoggedIn} component={NewArticle} />
+              <ProtectedRoute path="/editor/:slug" isLoggedIn={context.isLoggedIn} component={EditArticle} />
+              <Route component={Home} />
+              {/* <ProtectedRoute isLoggedIn={context.isLoggedIn} component={Dashboard}/> */}
             </Switch>
           </div>
         )}

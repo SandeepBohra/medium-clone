@@ -33,13 +33,13 @@ const Header = () => {
             <Link className="nav-link" to="/settings">Settings</Link>
           </li>
           <li className="nav-item d-inline-block items">
-            <Link className="nav-link" to="/new-article">New Article</Link>
+            <Link className="nav-link" to="/editor">New Article</Link>
           </li>
           {user && user.username && (<li className="nav-item d-inline-block items">
             <Link className="nav-link" to={`/user/${user.username}`}>{user.username}</Link>
           </li>)}
           <li className="nav-item d-inline-block items" onClick={logout}>
-            <Link className="nav-link" to="/home">Log Out</Link>
+            <Link className="nav-link" to="/login">Log Out</Link>
           </li>
         </ul>
         )}

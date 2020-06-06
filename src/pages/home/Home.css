@@ -17,6 +17,10 @@
   color: #007bff !important;
 }
 
+.articles-list {
+  position: relative;
+}
+
 .popular-tags {
   padding: 5px 10px 10px;
   background: #f3f3f3;
@@ -43,7 +47,7 @@
 }
 
 .article {
-  border-top: 1px solid #007bff;
+  border-top: 1px solid rgba(0,0,0,.1);
   padding: 20px 0;
 }
 
@@ -75,6 +79,10 @@
   border-radius: 50%;
 }
 
+.articles-and-tags .article-tabs button:focus {
+  outline: none;
+} 
+
 .article .article-detail h2 {
   font-weight: 600 !important;
   font-size: 1.5rem !important;
@@ -91,4 +99,10 @@
 
 .article > a > h2 {
   color: black;
+}
+
+.no-articles-yet {
+  margin-top: 10px;
+  border: 1px solid lightgrey;
+  padding: 20px 50px;
 }
