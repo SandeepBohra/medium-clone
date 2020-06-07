@@ -37,6 +37,7 @@ const UserProfile = () => {
 
   const handleTabClick = (tabId) => {
     setTab(tabId);
+    setPage(1);
   }
 
   const handlePageClick = (pageClicked) => {
@@ -65,10 +66,10 @@ const UserProfile = () => {
 
   useEffect(() => {
     if (tab === 'my-articles') {
-      setFetchArticlesURL(`${ARTICLES_API}?author=${username}&limit=${ITEMS_PER_PAGE}`);
+      setFetchArticlesURL(`${ARTICLES_API}?author=${username}&limit=${ITEMS_PER_PAGE}&offset=0`);
     }
     if (tab === 'fav-articles') {
-      setFetchArticlesURL(`${ARTICLES_API}?favorited=${username}&limit=${ITEMS_PER_PAGE}`);
+      setFetchArticlesURL(`${ARTICLES_API}?favorited=${username}&limit=${ITEMS_PER_PAGE}&offset=0`);
     }
   }, [username, tab])
 

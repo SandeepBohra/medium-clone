@@ -44,12 +44,14 @@ const Home = () => {
     setActiveTab('tag-articles');
     setTagSelected(tag);
     setArticles(null);
+    setPage(1);
 
     if (newFetchURL.searchParams.has('tag')) {
       newFetchURL.searchParams.set('tag', tag);
     } else {
       newFetchURL.searchParams.append('tag', tag);
     }
+    newFetchURL.searchParams.append('offset', 0);
     setFetchURL(newFetchURL.href);
   }
 
@@ -57,6 +59,7 @@ const Home = () => {
     setActiveTab('your-articles');
     setTagSelected(null);
     setArticles(null);
+    setPage(1);
     setFetchURL(FETCH_USER_ARTICLES_API);
   }
 
@@ -64,6 +67,7 @@ const Home = () => {
     setActiveTab('all-articles');
     setTagSelected(null);
     setArticles(null);
+    setPage(1);
     setFetchURL(`${ARTICLES_API}?limit=${ITEMS_PER_PAGE}&offset=0`);
   }
 
