@@ -3,6 +3,8 @@ import { useHistory } from 'react-router-dom';
 
 import { ARTICLE_API } from '../../Constants';
 
+import ApiHeader from '../../utils/ApiHeader';
+
 import './NewArticle.css';
 
 const NewArticle = () => {
@@ -34,10 +36,7 @@ const NewArticle = () => {
     setLoading(true);
     const response = await fetch(ARTICLE_API, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-        'authorization': `Token ${localStorage.getItem('token')}`,        
-      },
+      headers: ApiHeader(),
       body: JSON.stringify({
         ...formData,
         tagList: formData.tagList.split(","),

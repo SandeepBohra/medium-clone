@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { ARTICLE_API } from '../../Constants';
+import ApiHeader from '../../utils/ApiHeader';
 
 const NewArticle = () => {
 
@@ -35,10 +36,7 @@ const NewArticle = () => {
     setLoading(true);
     const response = await fetch(fetchArticleURL, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-        'authorization': `Token ${localStorage.getItem('token')}`,        
-      },
+      headers: ApiHeader(),
       body: JSON.stringify({
         ...formData,
       })
@@ -60,10 +58,7 @@ const NewArticle = () => {
     const fetchArticleDetails = async () => {
       const response = await fetch(fetchArticleURL, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          // 'authorization': `Token ${token ? token : ''}`,        
-        },
+        headers: ApiHeader(),
       });
       if (!response.ok) {
         // const { errors } = await response.json();

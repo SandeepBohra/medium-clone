@@ -47,10 +47,8 @@ function App() {
               <Route exact path="/settings">
                 <UserSettings />
               </Route>
-              <ProtectedRoute path="/editor" isLoggedIn={context.isLoggedIn} component={NewArticle} />
               <ProtectedRoute path="/editor/:slug" isLoggedIn={context.isLoggedIn} component={EditArticle} />
-              <Route component={Home} />
-              {/* <ProtectedRoute isLoggedIn={context.isLoggedIn} component={Dashboard}/> */}
+              <ProtectedRoute path="/editor" isLoggedIn={context.isLoggedIn} component={NewArticle} />
             </Switch>
           </div>
         )}

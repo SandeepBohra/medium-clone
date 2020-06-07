@@ -6,13 +6,15 @@ import { ARTICLE_API } from '../../Constants';
 
 import { AuthContext } from '../../contexts/AuthContext';
 
+import ApiHeader from '../../utils/ApiHeader';
+
 import './Article.css';
 
 
 const Article = () => {
   const history = useHistory();
   const { slug } = useParams();
-  const { isLoggedIn, token, username } = useContext(AuthContext);
+  const { isLoggedIn, username } = useContext(AuthContext);
 
   const fetchArticleURL = `${ARTICLE_API}/${slug}`;
 
@@ -31,18 +33,12 @@ const Article = () => {
       let response = null;
       if (articleDetails.favorited) {
         response = await fetch(`${fetchArticleURL}/favorite`, {
-          headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            'authorization': `Token ${token}`,        
-          },
+          headers: ApiHeader(),
           method: 'DELETE',
         });
       } else {
         response = await fetch(`${fetchArticleURL}/favorite`, {
-          headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            'authorization': `Token ${token}`,        
-          },
+          headers: ApiHeader(),
           method: 'POST',
         });
       }
@@ -58,10 +54,7 @@ const Article = () => {
 
   const deleteArticle = async () => {
     const response = await fetch(fetchArticleURL, {
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-        'authorization': `Token ${token}`,        
-      },
+      headers: ApiHeader(),
       method: 'DELETE',
     })
 
@@ -76,11 +69,7 @@ const Article = () => {
     event.preventDefault();
     if (commentText) {
       const response = await fetch(`${fetchArticleURL}/comments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          'authorization': `Token ${token}`,        
-        },
+        headers: ApiHeader(),
         body: JSON.stringify({
           comment: {
             body: commentText,
@@ -103,10 +92,7 @@ const Article = () => {
     const fetchArticleDetail = async () => {
       const response = await fetch(fetchArticleURL, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          // 'authorization': `Token ${token ? token : ''}`,        
-        },
+        headers: ApiHeader(),
       });
       if (!response.ok) {
         // const { errors } = await response.json();
@@ -120,10 +106,7 @@ const Article = () => {
     const fetchComments = async () => {
       const response = await fetch(`${fetchArticleURL}/comments`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          // 'authorization': `Token ${token ? token : ''}`,        
-        },
+        headers: ApiHeader(),
       });
       if (!response.ok) {
         // const { errors } = await response.json();

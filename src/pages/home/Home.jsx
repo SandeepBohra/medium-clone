@@ -6,6 +6,7 @@ import { POPULAR_TAGS_API, ARTICLES_API, ARTICLE_API, FETCH_USER_ARTICLES_API } 
 import ArticlesList from '../../components/articlesList/ArticlesList';
 import Pagination from '../../components/pagination/Pagination';
 import Loader from '../../components/loader/Loader';
+import ApiHeader from '../../utils/ApiHeader';
 
 // Context
 import { AuthContext } from '../../contexts/AuthContext';
@@ -80,10 +81,7 @@ const Home = () => {
       const selectedArticle = articles && articles.length && articles.filter(a => a.slug === slug)[0];
       const selectedArticleIndex = articles && articles.length && articles.findIndex(a => a.slug === slug);
       const response = await fetch(`${favArticleURL}`, {
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          'authorization': `Token ${token}`,        
-        },
+        headers: ApiHeader(),
         method: selectedArticle.favorited ? 'DELETE' : 'POST',
       });
       const { article } = await response.json();
@@ -111,10 +109,7 @@ const Home = () => {
       setArticles(null);
       setLoading(true);
       const response = await fetch(fetchURL, {
-        headers: isLoggedIn || localStorage.getItem('token') ? {
-          'Content-Type': 'application/json;charset=UTF-8',
-          'authorization': `Token ${token}`,        
-        }: {}
+        headers: ApiHeader(),
       });
       if (response.ok) {
         const { articles, articlesCount } = await response.json();

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 // Context
 import { AuthContext } from '../../contexts/AuthContext';
@@ -14,7 +14,7 @@ import './Register.css';
 const Register = () => {
 
   const authContext = useContext(AuthContext);
-  const { setAuth } = authContext;
+  const { setAuth, setUser, isLoggedIn } = authContext;
 
   const [formData, setFormData] = useState({
     username: '',
@@ -109,8 +109,10 @@ const Register = () => {
       console.log(errors);
       setApiError(errors);
     } else {
-      const { user: { token }} = await response.json();
-      setAuth(token);
+      const { user } = await response.json();
+      setAuth(user.token);
+      setUser(user);
+      localStorage.setItem('user', JSON.stringify(user));
     }
   }
 
@@ -119,6 +121,10 @@ const Register = () => {
     if (!username || !email || !password) {
       return true;
     }
+  }
+
+  if (isLoggedIn) {
+    return (<Redirect to="/" />)
   }
 
   return (

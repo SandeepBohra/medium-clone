@@ -1,15 +1,18 @@
 import React, { useState, useContext } from 'react';
 
-// import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { SINGLE_USER_API } from '../../Constants';
 
 import { AuthContext } from '../../contexts/AuthContext';
+import ApiHeader from '../../utils/ApiHeader';
 
 import './UserSettings.css';
 
 const UserSettings = () => {
 
-  const { user, token, setAuth, setUser } = useContext(AuthContext);
+  const history = useHistory();
+
+  const { user, setAuth, setUser } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     image: user.image,
@@ -36,10 +39,7 @@ const UserSettings = () => {
     setLoading(true);
     const response = await fetch(SINGLE_USER_API, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-        'authorization': `Token ${token}`,        
-      },
+      headers: ApiHeader(),
       body: JSON.stringify({...formData}),
     })
 
@@ -51,6 +51,7 @@ const UserSettings = () => {
       setAuth(user.token);
       setUser(user);
       localStorage.setItem('user', JSON.stringify(user));
+      history.push('/');
     }
     setLoading(false);
   }
@@ -117,7 +118,7 @@ const UserSettings = () => {
               type="submit"
               className="btn btn-primary float-right"
             >
-              Update Settings
+              {loading ? 'updating...' : 'Update Settings'}
             </button>
           </fieldset>
           
