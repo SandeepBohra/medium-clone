@@ -65,10 +65,10 @@ const UserProfile = () => {
 
   useEffect(() => {
     if (tab === 'my-articles') {
-      setFetchArticlesURL(`${ARTICLES_API}?author=${username}&limit=10`);
+      setFetchArticlesURL(`${ARTICLES_API}?author=${username}&limit=${ITEMS_PER_PAGE}`);
     }
     if (tab === 'fav-articles') {
-      setFetchArticlesURL(`${ARTICLES_API}?favorited=${username}&limit=10`);
+      setFetchArticlesURL(`${ARTICLES_API}?favorited=${username}&limit=${ITEMS_PER_PAGE}`);
     }
   }, [username, tab])
 
