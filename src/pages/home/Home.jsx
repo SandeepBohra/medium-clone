@@ -37,8 +37,8 @@ const Home = () => {
 
   const [tagSelected, setTagSelected] = useState(null);
 
-  // const [articlesError, setArticlesError] = useState(null);
-  // const [tagsError, setTagsError] = useState(null);
+  const [articlesError, setArticlesError] = useState(null);
+  const [tagsError, setTagsError] = useState(null);
 
   const onTagClick = (tag) => {
     setActiveTab('tag-articles');
@@ -97,6 +97,9 @@ const Home = () => {
       if (response.ok) {
         const { tags } = await response.json();
         setTags(tags);
+      } else {
+        const { errors } = await response.json();
+        setTagsError(errors);
       }
     }
 
@@ -108,6 +111,7 @@ const Home = () => {
     const fetchArticles = async () => {
       setArticles(null);
       setLoading(true);
+      setArticlesError(null);
       const response = await fetch(fetchURL, {
         headers: ApiHeader(),
       });
@@ -115,6 +119,9 @@ const Home = () => {
         const { articles, articlesCount } = await response.json();
         setArticles(articles);
         setTotalArticles(articlesCount);
+      } else {
+        const { errors } = await response.json();
+        setArticlesError(errors);
       }
       setLoading(false);
     }
@@ -180,6 +187,9 @@ const Home = () => {
                 )}
                 
                 {loading && <Loader />}
+                {articlesError && Object.keys(articlesError).map(e => (
+                    <div className="error" key={e}>{`${e} ${articlesError[e]}`}</div>
+                ))}
                 </div>
                 
                 {articles && articles.length === 0 ? (
@@ -201,6 +211,9 @@ const Home = () => {
                     >
                       {tag}
                     </div>
+                  ))}
+                  {tagsError && Object.keys(tagsError).map(e => (
+                    <div className="error" key={e}>{`${e} ${tagsError[e]}`}</div>
                   ))}
                 </div>
               </div>

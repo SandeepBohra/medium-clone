@@ -30,10 +30,16 @@ const Header = () => {
             <Link className="nav-link" to="/">Home</Link>
           </li>
           <li className="nav-item d-inline-block items">
-            <Link className="nav-link" to="/settings">Settings</Link>
+            <Link className="nav-link" to="/editor">
+              <i className="material-icons m-icon">create</i>
+              New Article
+            </Link>
           </li>
           <li className="nav-item d-inline-block items">
-            <Link className="nav-link" to="/editor">New Article</Link>
+            <Link className="nav-link" to="/settings">
+              <i className="material-icons m-icon">settings</i>
+              Settings
+            </Link>
           </li>
           {user && user.username && (<li className="nav-item d-inline-block items">
             <Link className="nav-link" to={`/user/${user.username}`}>{user.username}</Link>

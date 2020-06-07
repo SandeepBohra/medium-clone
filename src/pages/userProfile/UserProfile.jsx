@@ -11,11 +11,11 @@ import Loader from '../../components/loader/Loader';
 
 import ApiHeader from '../../utils/ApiHeader';
 
-import './UserInfo.css';
+import './UserProfile.css';
 
 const ITEMS_PER_PAGE = 5;
 
-const UserInfo = () => {
+const UserProfile = () => {
 
   const { username } = useParams();
 
@@ -82,7 +82,12 @@ const UserInfo = () => {
       }
     }
 
-    setFetchArticlesURL(`${ARTICLES_API}?author=${username}&limit=10`)
+    if (tab === 'my-articles') {
+      setFetchArticlesURL(`${ARTICLES_API}?author=${username}&limit=10`);
+    }
+    if (tab === 'fav-articles') {
+      setFetchArticlesURL(`${ARTICLES_API}?favorited=${username}&limit=10`);
+    }
 
     fetchUserProfile();
   }, [username])
@@ -167,4 +172,4 @@ const UserInfo = () => {
   )
 }
 
-export default UserInfo;
+export default UserProfile;

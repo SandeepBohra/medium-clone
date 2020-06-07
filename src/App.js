@@ -11,7 +11,7 @@ import Home from './pages/home/Home';
 import Article from './pages/article/Article';
 import Login from './pages/login/Login';
 import Register from './pages/register/Register';
-import UserInfo from './pages/userInfo/UserInfo';
+import UserProfile from './pages/userProfile/UserProfile';
 import UserSettings from './pages/userSettings/UserSettings';
 import NewArticle from './pages/newArticle/NewArticle';
 import EditArticle from './pages/editArticle/EditArticle';
@@ -42,7 +42,7 @@ function App() {
                 <Register />
               </Route>
               <Route exact path="/user/:username">
-                <UserInfo />
+                <UserProfile />
               </Route>
               <Route exact path="/settings">
                 <UserSettings />

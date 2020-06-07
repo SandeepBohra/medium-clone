@@ -105,5 +105,37 @@
 }
 
 .can-edit-delete button {
-  margin: 0 15px; 
+  margin: 0 5px; 
+}
+
+.edit-btn {
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+}
+
+.edit-btn:hover {
+  background: white;
+  color: black;
+}
+
+.delete-btn {
+  background: transparent;
+  color: red;
+  border-color: red; 
+}
+
+.delete-btn:hover {
+  background-color: red;
+  color: white;
+}
+
+.delete-icon {
+  cursor: pointer;
+  opacity: 0.5;
+  font-size: 20px;
+}
+
+.delete-icon:hover {
+  opacity: 1;
 }

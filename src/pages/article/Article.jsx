@@ -69,6 +69,7 @@ const Article = () => {
     event.preventDefault();
     if (commentText) {
       const response = await fetch(`${fetchArticleURL}/comments`, {
+        method: 'POST',
         headers: ApiHeader(),
         body: JSON.stringify({
           comment: {
@@ -84,6 +85,17 @@ const Article = () => {
         } 
       }
       setCommentText('');
+    }
+  }
+
+  const deleteAComment = async (commentId) => {
+    const response = await fetch(`${fetchArticleURL}/comments/${commentId}`, {
+      method: 'DELETE',
+      headers: ApiHeader(),
+    });
+    if (response.ok) {
+      const newComments = comments.filter(c => c.id !== commentId);
+      setComments([...newComments]);
     }
   }
 
@@ -136,7 +148,7 @@ const Article = () => {
         </div>
         {username !== articleDetails.author.username && (
           <button
-            className={`btn ${!articleDetails.favorited ? 'favorite-btn-style' : 'btn-success'}`}
+            className={`btn btn-sm ${!articleDetails.favorited ? 'favorite-btn-style' : 'btn-success'}`}
             onClick={toggleFavorite}
           >
             {!articleDetails.favorited ? `Favorite Article (${articleDetails.favoritesCount})` : `Unfavorite Article (${articleDetails.favoritesCount})`}
@@ -145,9 +157,15 @@ const Article = () => {
         {isLoggedIn && username === articleDetails.author.username && (
           <span className="can-edit-delete">
             <Link to={`/editor/${slug}`}>
-              <button className="btn btn-secondary">Edit Article</button>            
+              <button className="btn btn-sm edit-btn">
+                <i className="material-icons m-icon">edit</i>
+                Edit Article
+              </button>            
             </Link>
-            <button className="btn btn-danger" onClick={() => deleteArticle()}>Delete Article</button>
+            <button className="btn btn-sm delete-btn" onClick={() => deleteArticle()}>
+              <i className="material-icons m-icon">delete</i>
+              Delete Article
+            </button>
           </span>
         )}
       </div>
@@ -221,6 +239,12 @@ const Article = () => {
                       {c.author.username}
                     </Link>
                     <span>{moment(c.author.createdAt).format('MMMM D, YYYY')}</span>
+                    <i className="glyphicon glyphicon-remove"></i>
+                    {isLoggedIn && username === c.author.username && (
+                      <span className="float-right">
+                          <i className="material-icons delete-icon" onClick={() => deleteAComment(c.id)}>delete</i>
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

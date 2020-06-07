@@ -139,7 +139,6 @@ const Login = () => {
             type="submit"
             className="btn btn-primary"
             disabled={isSubmitDisabled()}
-            // onClick={handleSubmit}
           >
             Sign In
           </button>
