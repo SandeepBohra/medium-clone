@@ -8,7 +8,7 @@ const Pagination = ({ activePage, itemsPerPage, totalPageCount, setActivePage })
     const pages = []; 
     for(let i=1; i <= Math.ceil(totalPageCount/itemsPerPage); i++) {
       pages.push(
-        <li class={`page-item ${activePage === i ? 'active' : ''}`} onClick={() => setActivePage(i)}>
+        <li key={i} className={`page-item ${activePage === i ? 'active' : ''}`} onClick={() => setActivePage(i)}>
           <button className="btn page-btn page-link">
             {i}
           </button>

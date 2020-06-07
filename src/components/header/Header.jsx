@@ -42,10 +42,16 @@ const Header = () => {
             </Link>
           </li>
           {user && user.username && (<li className="nav-item d-inline-block items">
-            <Link className="nav-link" to={`/user/${user.username}`}>{user.username}</Link>
+            <Link className="nav-link" to={`/user/${user.username}`}>
+              <i className="material-icons m-icon">person</i>
+              {user.username}
+            </Link>
           </li>)}
           <li className="nav-item d-inline-block items" onClick={logout}>
-            <Link className="nav-link" to="/login">Log Out</Link>
+            <Link className="nav-link" to="/login">
+              <i className="material-icons m-icon">logout</i>
+              Log Out
+            </Link>
           </li>
         </ul>
         )}

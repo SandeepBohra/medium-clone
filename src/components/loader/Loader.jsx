@@ -4,8 +4,8 @@ import './Loader.css';
 
 const Loader = () => {
   return (
-    <div class="spinner-border text-primary loader" role="status">
-      <span class="sr-only">Loading...</span>
+    <div className="spinner-border text-primary loader" role="status">
+      <span className="sr-only">Loading...</span>
     </div>
   )
 }

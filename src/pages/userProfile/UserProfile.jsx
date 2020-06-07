@@ -37,15 +37,6 @@ const UserProfile = () => {
 
   const handleTabClick = (tabId) => {
     setTab(tabId);
-
-    if (tabId === "my-articles") {
-      newURL.searchParams.delete('favorited');
-      newURL.searchParams.set('author', username);
-    } else if (tabId === 'fav-articles') {
-      newURL.searchParams.delete('author');
-      newURL.searchParams.set('favorited', username);
-    }
-    setFetchArticlesURL(newURL.href);
   }
 
   const handlePageClick = (pageClicked) => {
@@ -73,6 +64,15 @@ const UserProfile = () => {
   }
 
   useEffect(() => {
+    if (tab === 'my-articles') {
+      setFetchArticlesURL(`${ARTICLES_API}?author=${username}&limit=10`);
+    }
+    if (tab === 'fav-articles') {
+      setFetchArticlesURL(`${ARTICLES_API}?favorited=${username}&limit=10`);
+    }
+  }, [username, tab])
+
+  useEffect(() => {
     const fetchUserProfile = async () => {
       setArticles(null);
       const response = await fetch(`${USER_PROFILE_API}/${username}`);
@@ -80,13 +80,6 @@ const UserProfile = () => {
         const { profile } = await response.json();
         setUserProfile(profile);
       }
-    }
-
-    if (tab === 'my-articles') {
-      setFetchArticlesURL(`${ARTICLES_API}?author=${username}&limit=10`);
-    }
-    if (tab === 'fav-articles') {
-      setFetchArticlesURL(`${ARTICLES_API}?favorited=${username}&limit=10`);
     }
 
     fetchUserProfile();
