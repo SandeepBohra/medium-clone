@@ -5,6 +5,7 @@ import moment from 'moment';
 import { ARTICLE_API } from '../../Constants';
 
 import { AuthContext } from '../../contexts/AuthContext';
+import Comment from './comment/Comment';
 
 import ApiHeader from '../../utils/ApiHeader';
 
@@ -226,28 +227,15 @@ const Article = () => {
                 </form>
               </div>
             )}
-            {comments && comments.map(c => (
-              <div key={c.id} className="comment">
-                <div className="comment-content">
-                  <p>{c.body}</p>
-                </div>
-                <div className="comment-footer">
-                  <div className="comment-meta">
-                    
-                    <Link to={`/user/${c.author.username}`}>
-                      <img src={c.author.image} alt={c.author.username} />
-                      {c.author.username}
-                    </Link>
-                    <span>{moment(c.author.createdAt).format('MMMM D, YYYY')}</span>
-                    <i className="glyphicon glyphicon-remove"></i>
-                    {isLoggedIn && username === c.author.username && (
-                      <span className="float-right">
-                          <i className="material-icons delete-icon" onClick={() => deleteAComment(c.id)}>delete</i>
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
+            {comments && comments.map(comment => (
+              <Comment
+                key={comment.id}
+                isLoggedIn={isLoggedIn}
+                username={username}
+                fetchArticleURL={fetchArticleURL}
+                comment={comment}
+                deleteAComment={deleteAComment} 
+              />
             ))}
           </div>
         </div>
