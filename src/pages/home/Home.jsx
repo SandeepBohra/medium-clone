@@ -45,14 +45,9 @@ const Home = () => {
     setTagSelected(tag);
     setArticles(null);
     setPage(1);
-
-    if (newFetchURL.searchParams.has('tag')) {
-      newFetchURL.searchParams.set('tag', tag);
-    } else {
-      newFetchURL.searchParams.append('tag', tag);
-    }
-    newFetchURL.searchParams.append('offset', 0);
-    setFetchURL(newFetchURL.href);
+    const newURL = new URL(`${ARTICLES_API}?limit=${ITEMS_PER_PAGE}&offset=0`);
+    newURL.searchParams.set('tag', tag);
+    setFetchURL(newURL.href);
   }
 
   const yourArticles = () => {
