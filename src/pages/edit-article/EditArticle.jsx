@@ -1,46 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useHistory, useParams } from "react-router-dom";
 
-import { ARTICLE_API } from '../../Constants';
-import ApiHeader from '../../utils/ApiHeader';
+import { API_ENDPOINTS } from "../../constants/Constants";
+import ApiHeader from "../../utils/ApiHeader";
 
 const NewArticle = () => {
-
   const history = useHistory();
   const { slug } = useParams();
 
-  const fetchArticleURL = `${ARTICLE_API}/${slug}`;
+  const fetchArticleURL = `${API_ENDPOINTS.ARTICLES}/${slug}`;
 
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    body: '',
-    tagList: '',
+    title: "",
+    description: "",
+    body: "",
+    tagList: ""
   });
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState(null);
 
-  const handleInputChange = (event) => {
+  const handleInputChange = event => {
     const { name, value } = event.target;
 
     setFormData({
       ...formData,
-      [name]: value,
-    })
-  }
+      [name]: value
+    });
+  };
 
-  const publishNewArticle = async (event) => {
+  const publishNewArticle = async event => {
     event.preventDefault();
     setErrors(null);
     setLoading(true);
     const response = await fetch(fetchArticleURL, {
-      method: 'PUT',
+      method: "PUT",
       headers: ApiHeader(),
       body: JSON.stringify({
-        ...formData,
+        ...formData
       })
-    })
+    });
 
     if (!response.ok) {
       const { errors } = await response.json();
@@ -52,13 +51,13 @@ const NewArticle = () => {
       }
     }
     setLoading(false);
-  }
+  };
 
   useEffect(() => {
     const fetchArticleDetails = async () => {
       const response = await fetch(fetchArticleURL, {
-        method: 'GET',
-        headers: ApiHeader(),
+        method: "GET",
+        headers: ApiHeader()
       });
       if (!response.ok) {
         // const { errors } = await response.json();
@@ -70,25 +69,28 @@ const NewArticle = () => {
           title: article.title,
           body: article.body,
           description: article.description,
-          tagList: article.tagList,
-        }))
+          tagList: article.tagList
+        }));
       }
-    }
+    };
 
     fetchArticleDetails();
-  }, [fetchArticleURL])
+  }, [fetchArticleURL]);
 
   return (
     <div className="container new-article">
       <div className="row">
         <div className="col-md-10 offset-md-1 col-xs-12">
           <ul>
-            {errors && Object.keys(errors).map(e => (
-              <li className="error" key={e}>
-                {errors[e].map(er => (<div className="error">{`${e} ${er}`}</div>))}
-              </li>
-            ))}
-            </ul>
+            {errors &&
+              Object.keys(errors).map(e => (
+                <li className="error" key={e}>
+                  {errors[e].map(er => (
+                    <div className="error">{`${e} ${er}`}</div>
+                  ))}
+                </li>
+              ))}
+          </ul>
           <form onSubmit={publishNewArticle}>
             <fieldset disabled={loading}>
               <div className="form-group">
@@ -135,7 +137,6 @@ const NewArticle = () => {
                 />
               </div>
             </fieldset>
-            
 
             <button
               type="submit"
@@ -144,14 +145,11 @@ const NewArticle = () => {
             >
               Publish Article
             </button>
-            
-            
           </form>
         </div>
       </div>
-
     </div>
-  )
-}
+  );
+};
 
 export default NewArticle;

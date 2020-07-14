@@ -1,43 +1,43 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from "react";
 
-import jwt from 'jwt-decode';
+import jwt from "jwt-decode";
 
-import History from '../utils/History';
+import History from "../utils/History";
 
 export const AuthContext = createContext({
   isLoggedIn: false,
-  logOut: () => {},
+  logOut: () => {}
 });
 
-export const AuthState = (props) => {
-  const [token, setToken] = useState(localStorage.getItem('token'));
+export const AuthState = props => {
+  const [token, setToken] = useState(localStorage.getItem("token"));
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
-  const [username, setUsername] = useState('');
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const [username, setUsername] = useState("");
 
   const logout = () => {
     setLoggedIn(false);
     setToken(null);
-    setUsername('');
+    setUsername("");
     setUser(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    History.push('/home');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    History.push("/home");
   };
 
-  const setAuth = (newToken) => {
+  const setAuth = newToken => {
     if (newToken) {
+      localStorage.setItem("token", newToken);
       setLoggedIn(true);
       setToken(newToken);
-      localStorage.setItem('token', newToken);
       const { username } = jwt(newToken);
       setUsername(username);
     }
-  }
+  };
 
   useEffect(() => {
-    if (localStorage.getItem('token')) {
-      setAuth(localStorage.getItem('token'));
+    if (localStorage.getItem("token")) {
+      setAuth(localStorage.getItem("token"));
     }
   }, [token]);
 
@@ -49,8 +49,12 @@ export const AuthState = (props) => {
     setUser: setUser,
     username: username,
     setUsername: setUsername,
-    token: token,
+    token: token
   };
 
-  return (<AuthContext.Provider value={authContext}>{props.children}</AuthContext.Provider>);
-}
+  return (
+    <AuthContext.Provider value={authContext}>
+      {props.children}
+    </AuthContext.Provider>
+  );
+};

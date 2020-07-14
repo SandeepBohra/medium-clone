@@ -1,47 +1,46 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
-import { ARTICLE_API } from '../../Constants';
+import { API_ENDPOINTS } from "../../constants/Constants";
 
-import ApiHeader from '../../utils/ApiHeader';
+import ApiHeader from "../../utils/ApiHeader";
 
-import './NewArticle.css';
+import "./NewArticle.css";
 
 const NewArticle = () => {
-
   const history = useHistory();
 
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    body: '',
-    tagList: '',
+    title: "",
+    description: "",
+    body: "",
+    tagList: ""
   });
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState(null);
 
-  const handleInputChange = (event) => {
+  const handleInputChange = event => {
     const { name, value } = event.target;
 
     setFormData({
       ...formData,
-      [name]: value,
-    })
-  }
+      [name]: value
+    });
+  };
 
-  const publishNewArticle = async (event) => {
+  const publishNewArticle = async event => {
     event.preventDefault();
     setErrors(null);
     setLoading(true);
-    const response = await fetch(ARTICLE_API, {
-      method: 'POST',
+    const response = await fetch(API_ENDPOINTS.ARTICLES, {
+      method: "POST",
       headers: ApiHeader(),
       body: JSON.stringify({
         ...formData,
-        tagList: formData.tagList.split(","),
+        tagList: formData.tagList.split(",")
       })
-    })
+    });
 
     if (!response.ok) {
       const { errors } = await response.json();
@@ -53,19 +52,22 @@ const NewArticle = () => {
       }
     }
     setLoading(false);
-  }
+  };
 
   return (
     <div className="container new-article">
       <div className="row">
         <div className="col-md-10 offset-md-1 col-xs-12">
           <ul>
-            {errors && Object.keys(errors).map(e => (
-              <li className="error" key={e}>
-                {errors[e].map(er => (<div key={er} className="error">{`${e} ${er}`}</div>))}
-              </li>
-            ))}
-            </ul>
+            {errors &&
+              Object.keys(errors).map(e => (
+                <li className="error" key={e}>
+                  {errors[e].map(er => (
+                    <div key={er} className="error">{`${e} ${er}`}</div>
+                  ))}
+                </li>
+              ))}
+          </ul>
           <form onSubmit={publishNewArticle}>
             <fieldset disabled={loading}>
               <div className="form-group">
@@ -112,7 +114,6 @@ const NewArticle = () => {
                 />
               </div>
             </fieldset>
-            
 
             <button
               type="submit"
@@ -121,14 +122,11 @@ const NewArticle = () => {
             >
               Publish Article
             </button>
-            
-            
           </form>
         </div>
       </div>
-
     </div>
-  )
-}
+  );
+};
 
 export default NewArticle;
