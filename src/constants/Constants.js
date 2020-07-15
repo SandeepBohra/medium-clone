@@ -17,3 +17,11 @@ export const API_ENDPOINTS = {
   ARTICLES_FEED: `${BASE_URL}/${API_TYPE.ARTICLES}/feed?limit=10&offset=0`,
   ARTICLES: `${BASE_URL}/${API_TYPE.ARTICLES}`
 };
+
+export const DEFAULT_HEADER = {
+  "Content-Type": "application/json;charset=UTF-8"
+};
+
+export const stringifyMe = obj => JSON.stringify(obj);
+
+export const token = localStorage.getItem("token");

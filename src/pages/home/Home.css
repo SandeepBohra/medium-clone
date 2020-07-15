@@ -9,10 +9,10 @@
 }
 
 .nav-tabs .nav-link.active {
-  background: #fff!important;
+  background: #fff !important;
   border-left: 0;
   border-right: 0;
-  border-top: 0; 
+  border-top: 0;
   border-bottom: 2px solid #007bff !important;
   color: #007bff !important;
 }
@@ -29,16 +29,16 @@
 
 .tag {
   background-color: #818a91;
-  font-size: .8rem;
-  padding-top: .1rem;
-  padding-bottom: .1rem;
+  font-size: 0.8rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
   white-space: nowrap;
   margin-right: 5px;
-  margin-bottom: .2rem;
+  margin-bottom: 0.2rem;
   display: inline-block;
   color: white;
-  padding-right: .6em;
-  padding-left: .6em;
+  padding-right: 0.6em;
+  padding-left: 0.6em;
   border-radius: 10rem;
 }
 
@@ -47,7 +47,7 @@
 }
 
 .article {
-  border-top: 1px solid rgba(0,0,0,.1);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
   padding: 20px 0;
 }
 
@@ -58,7 +58,7 @@
 }
 
 .article-info .info {
-  margin: 0 1.5rem 0 .3rem;
+  margin: 0 1.5rem 0 0.3rem;
   display: inline-block;
   vertical-align: middle;
   line-height: 1rem;
@@ -66,7 +66,7 @@
 
 .article-info .info .article-author {
   display: block;
-  font-weight: 500!important;
+  font-weight: 500 !important;
 }
 
 .posted-date {
@@ -81,7 +81,17 @@
 
 .articles-and-tags .article-tabs button:focus {
   outline: none;
-} 
+}
+
+.article-tabs ul li button {
+  background: transparent;
+}
+
+.article-tabs ul li button:hover {
+  border: none;
+  color: #007bff;
+  border-bottom: 2px solid #007bff !important;
+}
 
 .article .article-detail h2 {
   font-weight: 600 !important;

@@ -4,8 +4,10 @@ import { Link, Redirect } from "react-router-dom";
 
 import { AuthContext } from "../../contexts/AuthContext";
 
+import { loginService } from "../../services/UserService";
+
 // Constants
-import { EMAIL_VALIDATOR, API_ENDPOINTS } from "../../constants/Constants";
+import { EMAIL_VALIDATOR } from "../../constants/Constants";
 
 import "./Login.css";
 
@@ -73,26 +75,16 @@ const Login = () => {
   };
 
   const handleSubmit = async event => {
-    setApiError(null);
     event.preventDefault();
-    const response = await fetch(API_ENDPOINTS.LOGIN, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=UTF-8"
-      },
-      body: JSON.stringify({
-        user: {
-          email,
-          password
-        }
-      })
-    });
-
-    if (!response.ok) {
-      const { errors } = await response.json();
-      setApiError(errors);
+    setApiError(null);
+    const credentials = {
+      email,
+      password
+    };
+    const { error, user } = await loginService(credentials);
+    if (error) {
+      setApiError(error);
     } else {
-      const { user } = await response.json();
       localStorage.setItem("user", JSON.stringify(user));
       setAuth(user.token);
       setUser(user);

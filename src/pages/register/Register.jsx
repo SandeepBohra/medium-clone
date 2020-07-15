@@ -5,8 +5,10 @@ import { Link, Redirect } from "react-router-dom";
 // Context
 import { AuthContext } from "../../contexts/AuthContext";
 
+import { registerService } from "../../services/UserService";
+
 // Constants
-import { EMAIL_VALIDATOR, API_ENDPOINTS } from "../../constants/Constants";
+import { EMAIL_VALIDATOR } from "../../constants/Constants";
 
 import "./Register.css";
 
@@ -88,26 +90,13 @@ const Register = () => {
   };
 
   const handleSubmit = async event => {
-    setApiError(null);
     event.preventDefault();
-    const response = await fetch(API_ENDPOINTS.REGISTER, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=UTF-8"
-      },
-      body: JSON.stringify({
-        user: {
-          ...formData
-        }
-      })
-    });
+    setApiError(null);
+    const { error, user } = await registerService(formData);
 
-    if (!response.ok) {
-      const { errors } = await response.json();
-      console.log(errors);
-      setApiError(errors);
+    if (error) {
+      setApiError(error);
     } else {
-      const { user } = await response.json();
       localStorage.setItem("user", JSON.stringify(user));
       setAuth(user.token);
       setUser(user);

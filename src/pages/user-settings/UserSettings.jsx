@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
 
 import { useHistory } from "react-router-dom";
-import { API_ENDPOINTS } from "../../constants/Constants";
 
 import { AuthContext } from "../../contexts/AuthContext";
-import ApiHeader from "../../utils/ApiHeader";
+
+import { updateProfileService } from "../../services/UserService";
 
 import "./UserSettings.css";
 
@@ -36,17 +36,12 @@ const UserSettings = () => {
   const handleSubmit = async event => {
     event.preventDefault();
     setLoading(true);
-    const response = await fetch(API_ENDPOINTS.USER, {
-      method: "PUT",
-      headers: ApiHeader(),
-      body: JSON.stringify({ ...formData })
-    });
 
-    if (!response.ok) {
-      const { errors } = await response.json();
-      setApiError(errors);
+    const { error, user } = await updateProfileService(formData);
+
+    if (error) {
+      setApiError(error);
     } else {
-      const { user } = await response.json();
       localStorage.setItem("user", JSON.stringify(user));
       setAuth(user.token);
       setUser(user);
@@ -85,7 +80,7 @@ const UserSettings = () => {
               <div className="form-group">
                 <textarea
                   className="form-control"
-                  name="username"
+                  name="bio"
                   placeholder="Short bio about you"
                   rows="10"
                   value={formData.bio}
