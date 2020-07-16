@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import { API_ENDPOINTS } from "../../constants/Constants";
-
-import ApiHeader from "../../utils/ApiHeader";
+import { publishNewArticleService } from "../../services/ArticleService";
 
 import "./NewArticle.css";
 
@@ -33,20 +31,15 @@ const NewArticle = () => {
     event.preventDefault();
     setErrors(null);
     setLoading(true);
-    const response = await fetch(API_ENDPOINTS.ARTICLES, {
-      method: "POST",
-      headers: ApiHeader(),
-      body: JSON.stringify({
-        ...formData,
-        tagList: formData.tagList.split(",")
-      })
-    });
+    const articleBody = {
+      ...formData,
+      tagList: formData.tagList.split(",")
+    };
+    const { errors, article } = await publishNewArticleService(articleBody);
 
-    if (!response.ok) {
-      const { errors } = await response.json();
+    if (errors) {
       setErrors(errors);
     } else {
-      const { article } = await response.json();
       if (article.slug) {
         history.push(`/article/${article.slug}`);
       }

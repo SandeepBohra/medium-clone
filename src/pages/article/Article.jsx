@@ -7,6 +7,8 @@ import { API_ENDPOINTS } from "../../constants/Constants";
 import { AuthContext } from "../../contexts/AuthContext";
 import Comment from "./comment/Comment";
 
+import { deleteArticleService } from "../../services/ArticleService";
+
 import ApiHeader from "../../utils/ApiHeader";
 
 import "./Article.css";
@@ -53,12 +55,9 @@ const Article = () => {
   };
 
   const deleteArticle = async () => {
-    const response = await fetch(fetchArticleURL, {
-      headers: ApiHeader(),
-      method: "DELETE"
-    });
+    const { errors } = await deleteArticleService(slug);
 
-    if (!response.ok) {
+    if (errors) {
     } else {
       history.push("/");
     }

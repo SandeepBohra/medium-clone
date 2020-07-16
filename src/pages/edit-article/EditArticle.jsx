@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
+import { updateArticleService } from "../../services/ArticleService";
+
 import { API_ENDPOINTS } from "../../constants/Constants";
 import ApiHeader from "../../utils/ApiHeader";
 
@@ -33,19 +35,12 @@ const NewArticle = () => {
     event.preventDefault();
     setErrors(null);
     setLoading(true);
-    const response = await fetch(fetchArticleURL, {
-      method: "PUT",
-      headers: ApiHeader(),
-      body: JSON.stringify({
-        ...formData
-      })
-    });
 
-    if (!response.ok) {
-      const { errors } = await response.json();
+    const { errors, article } = await updateArticleService(formData, slug);
+
+    if (errors) {
       setErrors(errors);
     } else {
-      const { article } = await response.json();
       if (article.slug) {
         history.push(`/article/${article.slug}`);
       }
